@@ -46,4 +46,20 @@ public class UserController {
 
         return modelAndView;
     }
+
+    @GetMapping(value="/login")
+    public ModelAndView login(){
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("login");
+        return modelAndView;
+    }
+
+    @PostMapping(value="/login")
+    public ModelAndView loggedUser(){
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("admin/home");
+        return modelAndView;
+    }
 }
