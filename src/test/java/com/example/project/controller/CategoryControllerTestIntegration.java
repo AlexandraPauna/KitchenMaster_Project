@@ -19,7 +19,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.zalando.problem.ProblemModule;
 import org.zalando.problem.validation.ConstraintViolationProblemModule;
 
+import java.util.Optional;
+
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -124,6 +127,21 @@ public class CategoryControllerTestIntegration {
                 .andExpect(model().attributeHasFieldErrorCode("category", "name", "Length"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("/category/new"));
+    }
+
+    @Test
+    public void shouldFetch_CategoryById() throws Exception {
+        final Integer categId = 1;
+        final Category category = new Category();
+        category.setCategoryId(categId);
+        category.setName("CategTest");
+
+        when(categoryService.findCategoryById(categId)).thenReturn(category);
+
+        this.mockMvc.perform(get("/category/show/{id}", categId))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("category", category))
+        ;
     }
 
 }

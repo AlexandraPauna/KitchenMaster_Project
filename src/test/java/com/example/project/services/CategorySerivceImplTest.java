@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Optional;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -32,6 +34,8 @@ public class CategorySerivceImplTest {
                 .build();
         Mockito.when(categoryRepository.saveAndFlush(any()))
                 .thenReturn(category);
+        Mockito.when(categoryRepository.findById(anyInt()))
+                .thenReturn(Optional.of(category));
     }
 
     @Test
@@ -44,5 +48,17 @@ public class CategorySerivceImplTest {
 
         // Verify the results
         assertEquals(name, result.getName());
+    }
+
+    @Test
+    public void testFindCategoryById() {
+        // Setup
+        final Integer value = 1;
+
+        // Run the test
+        final Category result = categoryService.findCategoryById(1);
+
+        // Verify the results
+        assertEquals(value, result.getCategoryId());
     }
 }

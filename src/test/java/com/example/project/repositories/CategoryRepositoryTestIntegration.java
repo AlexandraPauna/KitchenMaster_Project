@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.platform.commons.logging.LoggerFactory;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -16,40 +18,55 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import java.util.Optional;
+import java.util.logging.Logger;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestMethodOrder(OrderAnnotation.class)
 public class CategoryRepositoryTestIntegration {
-    @Autowired
-    private TestEntityManager entityManager;
 
     @Autowired
     CategoryRepository categoryRepository;
 
-    @Before
-    public void setUp() throws Exception {
-    }
+//    @Before
+//    public void setUp() throws Exception {
+//        Category category = new Category();
+//        category.setName("CategorieTest");
+//        savedCategory = categoryRepository.saveAndFlush(category);
+//    }
 
     @Test
     @Transactional
     @Rollback(value = false)
     @Order(1)
-    public void saveCategory() throws Exception {
+    public void t1_saveCategory() throws Exception {
 
         Category category = new Category();
         category.setName("CategorieTest");
+        category.setCategoryId(101);
         Category savedCategory = categoryRepository.saveAndFlush(category);
 
         assertThat(savedCategory.getCategoryId()).isGreaterThan(0);
     }
 
-//    @Test
-//    public void findByName() {
-//        Optional<Category> optCategory = categoryRepository.findByName("Vegan");
-//        assertEquals(Optional.ofNullable(optCategory.get().getName()), "Vegan");
-//    }
+    @Test
+    @Order(2)
+    public void t2_findByName() {
+        Optional<Category> optCategory = categoryRepository.findByName("CategorieTest");
+        assertThat(Optional.ofNullable(optCategory.get().getName())).isEqualTo(Optional.ofNullable("CategorieTest"));
+    }
+
+    @Test
+    @Order(3)
+    public void t3_findById() {
+        Optional<Category> optCategory = categoryRepository.findById(101);
+        assertThat(Optional.ofNullable(optCategory.get().getCategoryId())).isEqualTo(Optional.ofNullable(101));
+    }
 }
