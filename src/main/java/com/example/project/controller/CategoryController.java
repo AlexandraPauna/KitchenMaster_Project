@@ -85,4 +85,40 @@ public class CategoryController {
 
         return "category/show";
     }
+
+    @RequestMapping(value = "/category/update/{id}", method = RequestMethod.GET)
+    public String updateCategory(Model model,@PathVariable int id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByUserName(auth.getName());
+        if(user != null){
+            model.addAttribute("loggedUser", user);
+            model.addAttribute("isAuth", "true");
+            String role = user.getRoles().stream().findFirst().get().getRole().toUpperCase();
+            model.addAttribute("role", role);
+        }
+        else{
+            model.addAttribute("isAuth", "false");
+        }
+
+        Category category = categoryService.findCategoryById(id);;
+        model.addAttribute("category", category);
+
+        return "/category/update";
+    }
+
+    //@PostMapping(value = "/category/update/{id}")
+    @RequestMapping(value = "/category/update/{id}", method = RequestMethod.POST)
+    public String updateCategory(@PathVariable("id") int id,@Valid Category category,
+                                 BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()){
+            return "/category/update";
+        }
+
+        Category currentCategory = categoryService.findCategoryById(id);
+        currentCategory.setName(category.getName());
+        categoryService.updateCategory(currentCategory);
+
+        return "/category/index";
+
+    }
 }

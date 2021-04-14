@@ -31,4 +31,11 @@ public class CategoryServiceImpl implements CategoryService {
         }
         return categoryOptional.get();
     }
+
+    @Override
+    public Category updateCategory(Category category) {
+        //Category savedCategory = categoryRepository.save(category);
+        //return savedCategory;
+        return categoryRepository.save(category);
+    }
 }

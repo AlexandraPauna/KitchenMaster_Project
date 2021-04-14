@@ -7,5 +7,5 @@ import org.springframework.beans.factory.annotation.Autowired;
 public interface CategoryService{
     Category saveCategory(Category category);
     Category findCategoryById(Integer id);
-
+    Category updateCategory(Category category);
 }
