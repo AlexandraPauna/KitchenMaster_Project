@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class CategoryController {
@@ -119,6 +122,74 @@ public class CategoryController {
         categoryService.updateCategory(currentCategory);
 
         return "/category/index";
+    }
 
+    @RequestMapping(value = "/category/index", method = RequestMethod.GET)
+    public String allCategories(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByUserName(auth.getName());
+        if(user != null){
+            model.addAttribute("loggedUser", user);
+            model.addAttribute("isAuth", "true");
+            String role = user.getRoles().stream().findFirst().get().getRole().toUpperCase();
+            model.addAttribute("role", role);
+        }
+        else{
+            model.addAttribute("isAuth", "false");
+        }
+
+        List<Category> categories = categoryService.getAllCategories();
+        Collections.sort(categories, new Comparator<Category>() {
+            @Override
+            public int compare(Category c1, Category c2) {
+                return c1.getName().compareTo(c2.getName());
+            }
+        });
+        int nrPerColumn = categories.size() / 4;
+        int surplus = categories.size() - (nrPerColumn * 4);
+        int s = 0;
+        int counter = 0;
+        List<Category> list1 = null; List<Category> list2 = null; List<Category> list3 = null; List<Category> list4 = null;
+        if (categories.size() > 0) {
+            if (surplus > 0) {
+                s = 1;
+                surplus = surplus - 1;
+            }
+            list1 = categories.stream().limit(nrPerColumn + s).collect(Collectors.toList());
+            counter = nrPerColumn + s;
+            if (categories.size() > counter) {
+                s = 0;
+                if (surplus > 0) {
+                    s = 1;
+                    surplus = surplus - 1;
+                }
+                list2 = categories.stream().skip(counter).limit(nrPerColumn + s).collect(Collectors.toList()); //subCatgs.Skip(counter).Take(nrPerColumn + s).ToList();
+                counter = counter + nrPerColumn + s;
+                if (categories.size() > counter) {
+                    s = 0;
+                    if (surplus > 0) {
+                        s = 1;
+                        surplus = surplus - 1;
+                    }
+                    list3 = categories.stream().skip(counter).limit(nrPerColumn + s).collect(Collectors.toList()); //.Skip(counter).Take(nrPerColumn + s).ToList();
+                    counter = counter + nrPerColumn + s;
+                    if (categories.size() > counter) {
+                        s = 0;
+                        if (surplus > 0) {
+                            s = 1;
+                            surplus = surplus - 1;
+                        }
+                        list4 = categories.stream().skip(counter).limit(nrPerColumn + s).collect(Collectors.toList()); //Skip(counter).Take(nrPerColumn + s).ToList();
+                    }
+
+                }
+            }
+        }
+        model.addAttribute("categoriesList1", list1);
+        model.addAttribute("categoriesList2", list2);
+        model.addAttribute("categoriesList3", list3);
+        model.addAttribute("categoriesList4", list4);
+
+        return "/category/index";
     }
 }

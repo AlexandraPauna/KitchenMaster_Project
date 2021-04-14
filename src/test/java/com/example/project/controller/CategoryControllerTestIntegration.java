@@ -19,14 +19,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.zalando.problem.ProblemModule;
 import org.zalando.problem.validation.ConstraintViolationProblemModule;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -50,6 +54,17 @@ public class CategoryControllerTestIntegration {
 
     @BeforeEach
     void setUp() {
+//        this.categList = new ArrayList<>();
+//        Category category2 = Category.builder()
+//                .categoryId(2)
+//                .name("Categorie Test_2")
+//                .build();
+//        Category category3 = Category.builder()
+//                .categoryId(3)
+//                .name("Categorie Test_3")
+//                .build();
+//        this.categList.add(category2);
+//        this.categList.add(category3);
 
         objectMapper.registerModule(new ProblemModule());
         objectMapper.registerModule(new ConstraintViolationProblemModule());
@@ -244,5 +259,50 @@ public class CategoryControllerTestIntegration {
                 .andExpect(view().name("/category/update"))
          ;
     }
+
+//    @Test
+//    void getAllToDos() throws Exception {
+//        List<ToDo> toDoList = new ArrayList<ToDo>();
+//        toDoList.add(new ToDo(1L,"Eat thrice",true));
+//        toDoList.add(new ToDo(2L,"Seep Twice",true));
+//        when(toDoService.findAll()).thenReturn(toDoList);
+//
+//        mockMvc.perform(MockMvcRequestBuilders.get("/todos")
+//                .contentType(MediaType.APPLICATION_JSON)
+//        ).andExpect(jsonPath("$", hasSize(2))).andDo(print());
+//    }
+
+    //vor exista 4 liste deoarece categoriile vor aparea impartite pe 4 coloane
+    //deoarece exista 2 categorii, primele 2 vor contine cate una, iar celelalte 2 vor fi goale
+    @Test
+    public void shouldFetchAllCategories_In2Lists() throws Exception {
+        List<Category> categList;
+
+        categList = new ArrayList<>();
+        Category category2 = new Category();
+        category2.setCategoryId(2);
+        category2.setName("Categorie Test_2");
+        Category category3 = new Category();
+        category3.setCategoryId(3);
+        category3.setName("Categorie Test_3");
+        categList.add(category2);
+        categList.add(category3);
+
+        given(categoryService.getAllCategories()).willReturn(categList);
+        List<Category> expectedCategList1 = new ArrayList<Category>();
+        expectedCategList1.add(categList.get(0));
+        List<Category> expectedCategList2 = new ArrayList<Category>();
+        expectedCategList2.add(categList.get(1));
+
+        this.mockMvc.perform(get("/category/index"))
+                .andExpect(model().attribute("categoriesList1", expectedCategList1))
+                .andExpect(model().attribute("categoriesList2", expectedCategList2))
+                .andExpect(model().attribute("categoriesList3", is(nullValue())))
+                .andExpect(model().attribute("categoriesList4", is(nullValue())))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/category/index"))
+        ;
+    }
+
 
 }

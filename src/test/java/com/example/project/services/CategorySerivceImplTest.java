@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -75,5 +77,30 @@ public class CategorySerivceImplTest {
 
         // Verify the results
         assertEquals(value, result.getName());
+    }
+
+    @Test
+    public void testGetAllCategories() {
+        // Setup
+        Category category2 = Category.builder()
+                .categoryId(2)
+                .name("Categorie Test_2")
+                .build();
+        Category category3 = Category.builder()
+                .categoryId(3)
+                .name("Categorie Test_3")
+                .build();
+        List<Category> categList = new ArrayList<Category>();
+        categList.add(category);
+        categList.add(category2);
+        categList.add(category3);
+        Mockito.when(categoryRepository.findAll())
+                .thenReturn(categList);
+
+        // Run the test
+        final List<Category> result = categoryService.getAllCategories();
+
+        // Verify the results
+        assertEquals(categList.size(), result.size());
     }
 }

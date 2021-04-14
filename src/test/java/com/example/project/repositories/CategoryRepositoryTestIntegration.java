@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -83,5 +84,13 @@ public class CategoryRepositoryTestIntegration {
             Optional<Category> updatedCategory = categoryRepository.findByName("CategSchimbata");
             assertThat(Optional.ofNullable(updatedCategory.get().getName())).isEqualTo(Optional.ofNullable("CategSchimbata"));
         }
+    }
+
+    @Test
+    @Rollback(false)
+    @Order(5)
+    public void t5_getAllCategories() {
+        List<Category> categories = (List<Category>) categoryRepository.findAll();
+        assertThat(categories.size()).isGreaterThan(0);
     }
 }
