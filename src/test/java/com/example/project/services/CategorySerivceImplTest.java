@@ -36,6 +36,8 @@ public class CategorySerivceImplTest {
                 .thenReturn(category);
         Mockito.when(categoryRepository.findById(anyInt()))
                 .thenReturn(Optional.of(category));
+        Mockito.when(categoryRepository.save(any()))
+                .thenReturn(category);
     }
 
     @Test
@@ -60,5 +62,18 @@ public class CategorySerivceImplTest {
 
         // Verify the results
         assertEquals(value, result.getCategoryId());
+    }
+
+    @Test
+    public void testUpdateCategory() {
+        // Setup
+        final String value = "Categorie Sch";
+        category.setName(value);
+
+        // Run the test
+        final Category result = categoryService.updateCategory(Category.builder().build());
+
+        // Verify the results
+        assertEquals(value, result.getName());
     }
 }

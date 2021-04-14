@@ -69,4 +69,19 @@ public class CategoryRepositoryTestIntegration {
         Optional<Category> optCategory = categoryRepository.findById(101);
         assertThat(Optional.ofNullable(optCategory.get().getCategoryId())).isEqualTo(Optional.ofNullable(101));
     }
+
+    @Test
+    @Rollback(false)
+    @Order(4)
+    public void t4_updateCategory() {
+        Optional<Category> optCategory = categoryRepository.findByName("CategorieTest");
+        if(optCategory.isPresent()){
+            Category cat = optCategory.get();
+            cat.setName("CategSchimbata");
+            categoryRepository.save(cat);
+
+            Optional<Category> updatedCategory = categoryRepository.findByName("CategSchimbata");
+            assertThat(Optional.ofNullable(updatedCategory.get().getName())).isEqualTo(Optional.ofNullable("CategSchimbata"));
+        }
+    }
 }
