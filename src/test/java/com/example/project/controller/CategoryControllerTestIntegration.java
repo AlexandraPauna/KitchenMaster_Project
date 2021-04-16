@@ -16,6 +16,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.zalando.problem.ProblemModule;
 import org.zalando.problem.validation.ConstraintViolationProblemModule;
 
@@ -304,5 +305,34 @@ public class CategoryControllerTestIntegration {
         ;
     }
 
+    //DELETE
+    //visitor cannot delete category, will be redirected to login page
+    @Test
+    public void testCategoryDelete_Redirect() throws Exception {
 
+        mockMvc.perform(delete("/category/{id}/delete", 1).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("http://localhost/login"))
+        ;
+    }
+
+    @Test
+    @WithMockUser(authorities = {"USER"})
+    public void testCategoryDeleteByUser_Redirect() throws Exception {
+
+        mockMvc.perform(delete("/category/{id}/delete", 1).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+        ;
+    }
+
+    //admin can delete category
+    @Test
+    @WithMockUser(authorities = {"ADMIN"})
+    public void testCategoryDeleteByAdmin_Succes() throws Exception {
+
+        mockMvc.perform(delete("/category/{id}/delete", 1).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/category/index"))
+        ;
+    }
 }

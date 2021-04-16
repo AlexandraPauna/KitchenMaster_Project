@@ -103,4 +103,16 @@ public class CategorySerivceImplTest {
         // Verify the results
         assertEquals(categList.size(), result.size());
     }
+
+    @Test
+    public void testDeleteCategory() {
+        // Setup
+        final Integer value = 1;
+
+        // Run the test
+        categoryService.deleteById(value);
+
+        // Verify the results
+        verify(categoryRepository, times(1)).deleteById(eq(value));
+    }
 }

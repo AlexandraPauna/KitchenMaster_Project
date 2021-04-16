@@ -93,4 +93,20 @@ public class CategoryRepositoryTestIntegration {
         List<Category> categories = (List<Category>) categoryRepository.findAll();
         assertThat(categories.size()).isGreaterThan(0);
     }
+
+    @Test
+    @Rollback(false)
+    @Order(6)
+    public void t6_deleteCategory() {
+        Optional<Category> optCategory = categoryRepository.findByName("CategorieTest");
+        if(optCategory.isPresent()){
+            Category cat = optCategory.get();
+            categoryRepository.deleteById(cat.getCategoryId());
+
+            Optional<Category> deletedCategory = categoryRepository.findByName("CategorieTest");
+            assertThat(deletedCategory).isNull();
+        }
+
+    }
+
 }

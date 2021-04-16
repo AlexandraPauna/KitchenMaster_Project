@@ -53,7 +53,7 @@ public class CategoryController {
         }
 
         Category savedCategory = categoryService.saveCategory(category);
-        return "/category/index";
+        return "redirect:/category/index";
     }
 
     @GetMapping("/category/show/{id}")
@@ -191,5 +191,11 @@ public class CategoryController {
         model.addAttribute("categoriesList4", list4);
 
         return "/category/index";
+    }
+
+    @RequestMapping("category/{id}/delete")
+    public String deleteById(@PathVariable String id){
+        categoryService.deleteById(Integer.valueOf(id));
+        return "redirect:/category/index";
     }
 }
