@@ -2,6 +2,7 @@ package com.example.project.controller;
 
 import com.example.project.model.Category;
 import com.example.project.service.CategoryService;
+import com.example.project.service.RecipeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,22 +51,14 @@ public class CategoryControllerTestIntegration {
     @MockBean
     private CategoryService categoryService;
 
+    @MockBean
+    private RecipeService recipeService;
+
     @Autowired
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-//        this.categList = new ArrayList<>();
-//        Category category2 = Category.builder()
-//                .categoryId(2)
-//                .name("Categorie Test_2")
-//                .build();
-//        Category category3 = Category.builder()
-//                .categoryId(3)
-//                .name("Categorie Test_3")
-//                .build();
-//        this.categList.add(category2);
-//        this.categList.add(category3);
 
         objectMapper.registerModule(new ProblemModule());
         objectMapper.registerModule(new ConstraintViolationProblemModule());
@@ -112,8 +105,8 @@ public class CategoryControllerTestIntegration {
 
         this.mockMvc.perform(post("/category/new")
                 .param("name", "CategorieT"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("/category/index"))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("http://localhost/category/index"))
         ;
     }
 
@@ -144,6 +137,7 @@ public class CategoryControllerTestIntegration {
                 .andExpect(view().name("/category/new"));
     }
 
+    //SHOW Category
     @Test
     public void shouldFetch_CategoryById() throws Exception {
         final Integer categId = 1;
@@ -211,7 +205,7 @@ public class CategoryControllerTestIntegration {
 
     @Test
     @WithMockUser(authorities = {"ADMIN"})
-    public void updateCategory_Return200_WhenCreateCategory_Succes() throws Exception {
+    public void updateCategory_Return200_WhenUpdateCategory_Succes() throws Exception {
         final Integer categId = 1;
         final Category category = new Category();
         category.setCategoryId(categId);
@@ -229,15 +223,21 @@ public class CategoryControllerTestIntegration {
 
     @Test
     @WithMockUser(authorities = {"ADMIN"})
-    public void updateCategory_NameEmpty() throws Exception {
-        Category category = new Category();
+    public void updateCategory_NameWrong() throws Exception {
+        final Integer categId = 1;
+        final Category category = new Category();
+        category.setCategoryId(categId);
 
-        mockMvc.perform(post("/category/new").contentType(APPLICATION_FORM_URLENCODED))
+        when(categoryService.findCategoryById(categId)).thenReturn(category);
+
+        mockMvc.perform(post("/category/update/{id}", category.getCategoryId())
+                .contentType(APPLICATION_FORM_URLENCODED))
                 .andExpect(model().hasErrors())
                 .andExpect(model().attributeHasFieldErrors("category","name"))
                 .andExpect(model().attributeHasFieldErrorCode("category", "name", "NotEmpty"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("/category/new"));
+                .andExpect(view().name("/category/update"))
+        ;
     }
 
     @Test
@@ -261,18 +261,7 @@ public class CategoryControllerTestIntegration {
          ;
     }
 
-//    @Test
-//    void getAllToDos() throws Exception {
-//        List<ToDo> toDoList = new ArrayList<ToDo>();
-//        toDoList.add(new ToDo(1L,"Eat thrice",true));
-//        toDoList.add(new ToDo(2L,"Seep Twice",true));
-//        when(toDoService.findAll()).thenReturn(toDoList);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.get("/todos")
-//                .contentType(MediaType.APPLICATION_JSON)
-//        ).andExpect(jsonPath("$", hasSize(2))).andDo(print());
-//    }
-
+    //INDEX Category
     //vor exista 4 liste deoarece categoriile vor aparea impartite pe 4 coloane
     //deoarece exista 2 categorii, primele 2 vor contine cate una, iar celelalte 2 vor fi goale
     @Test

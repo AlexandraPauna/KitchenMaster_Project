@@ -1,6 +1,7 @@
 package com.example.project.repositories;
 
 import com.example.project.model.Category;
+import com.example.project.model.Recipe;
 import com.example.project.model.User;
 import com.example.project.repository.UserRepository;
 import org.junit.Test;
@@ -48,5 +49,17 @@ public class UserRepositoryTestIntegration {
     public void t2_findByName() {
         User optUser = userRepository.findByUserName("TestU");
         assertThat(optUser.getUserName()).isEqualTo("TestU");
+    }
+
+    @Test
+    @Rollback(false)
+    @Order(3)
+    public void t3_updateUser() {
+        User user = userRepository.findByUserName("TestU");
+        user.setLastName("UserSchimbat");
+        userRepository.save(user);
+
+        User updatedUser = userRepository.findByUserName("TestU");
+        assertThat(Optional.ofNullable(updatedUser.getLastName())).isEqualTo(Optional.ofNullable("UserSchimbat"));
     }
 }

@@ -1,5 +1,6 @@
 package com.example.project.controller;
 
+import com.example.project.model.Category;
 import com.example.project.model.Role;
 import com.example.project.model.User;
 import com.example.project.repository.RoleRepository;
@@ -24,6 +25,7 @@ import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -126,6 +128,50 @@ public class UserControllerTestIntegration {
         this.mockMvc.perform(get("/profile"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("/profile"))
+        ;
+    }
+
+    //UPDATE User
+
+    //when a user that is not logged in tries to acces the edit profile page
+    @Test
+    public void updateUser_Redirect_NoUserLoggedIn() throws Exception {
+        final User user = new User();
+        user.setId(101);
+        user.setUserName("TestU");
+        user.setFirstName("Test1");
+        user.setLastName("Test");
+        user.setEmail("test@test.com");
+        user.setPassword("Parola1!");
+        Role adminRole = roleRepository.findByRole("ADMIN");
+        user.setRoles(new HashSet<Role>(Arrays.asList(adminRole)));
+
+        when(userService.findUserByUserName(any())).thenReturn(user);
+
+        this.mockMvc.perform(get("/user/update/{id}", 101))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("http://localhost/login"))
+        ;
+    }
+
+     //when a logged in user tries to acces the profile page, he will be permitted
+    @Test
+    @WithMockUser
+    public void updateCategory_Return200_Logged() throws Exception {
+        final User user = new User();
+        user.setId(101);
+        user.setUserName("TestU");
+        user.setFirstName("Test1");
+        user.setLastName("Test");
+        user.setEmail("test@test.com");
+        user.setPassword("Parola1!");
+        Role adminRole = roleRepository.findByRole("ADMIN");
+        user.setRoles(new HashSet<Role>(Arrays.asList(adminRole)));
+
+        when(userService.findUserByUserName(any())).thenReturn(user);
+        this.mockMvc.perform(get("/user/update/{id}", 101))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/user/update"))
         ;
     }
 }

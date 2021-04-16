@@ -1,5 +1,6 @@
 package com.example.project.services;
 
+import com.example.project.model.Category;
 import com.example.project.model.User;
 import com.example.project.repository.RoleRepository;
 import com.example.project.repository.UserRepository;
@@ -82,5 +83,18 @@ public class UserServiceTest {
 
         // Verify the results
         assertEquals(email, result.getEmail());
+    }
+
+    @Test
+    public void testUpdateUser() {
+        // Setup
+        final String value = "UserUpd";
+        user.setLastName(value);
+
+        // Run the test
+        final User result = userServiceUnderTest.updateUser(User.builder().build());
+
+        // Verify the results
+        assertEquals(value, result.getLastName());
     }
 }

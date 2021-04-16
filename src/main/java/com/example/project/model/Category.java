@@ -26,4 +26,6 @@ public class Category {
     @NotEmpty(message = "*Please provide a category name!")
     private String name;
 
+    @ManyToMany(mappedBy = "categories", cascade = CascadeType.ALL)
+    private Set<Recipe> recipes = new HashSet<Recipe>();
 }
