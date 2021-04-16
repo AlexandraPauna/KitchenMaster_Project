@@ -46,6 +46,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .antMatchers("/category/new").hasAuthority("ADMIN")
                 .antMatchers("/category/update/**").hasAuthority("ADMIN")
+                .antMatchers("/profile").authenticated()
                 .anyRequest()
                 .authenticated()
                 .and().csrf().disable()

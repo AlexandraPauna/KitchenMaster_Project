@@ -1,5 +1,6 @@
 package com.example.project.repositories;
 
+import com.example.project.model.Category;
 import com.example.project.model.User;
 import com.example.project.repository.UserRepository;
 import org.junit.Test;
@@ -11,6 +12,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -24,7 +27,7 @@ public class UserRepositoryTestIntegration {
     @Test
     @Transactional
     @Rollback(value = false)
-    public void t1_saveCategory() throws Exception {
+    public void t1_saveUser() throws Exception {
 
         User user = User.builder()
                 .id(101)
@@ -38,5 +41,12 @@ public class UserRepositoryTestIntegration {
         User savedUser = userRepository.save(user);
 
         assertThat(savedUser.getId()).isGreaterThan(0);
+    }
+
+    @Test
+    @Order(2)
+    public void t2_findByName() {
+        User optUser = userRepository.findByUserName("TestU");
+        assertThat(optUser.getUserName()).isEqualTo("TestU");
     }
 }
