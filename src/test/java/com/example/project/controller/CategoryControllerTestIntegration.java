@@ -106,7 +106,7 @@ public class CategoryControllerTestIntegration {
         this.mockMvc.perform(post("/category/new")
                 .param("name", "CategorieT"))
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrl("http://localhost/category/index"))
+                .andExpect(redirectedUrl("/category/index"))
         ;
     }
 
