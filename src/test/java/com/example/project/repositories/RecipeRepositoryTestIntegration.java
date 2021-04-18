@@ -77,4 +77,19 @@ public class RecipeRepositoryTestIntegration {
             assertThat(Optional.ofNullable(updatedRecipe.get().getName())).isEqualTo(Optional.ofNullable("RetetaSchimbata"));
         }
     }
+
+    @Test
+    @Rollback(false)
+    @Order(4)
+    public void t4_deleteRecipe() {
+        Optional<Recipe> optRecipe = recipeRepository.findById(101);
+        if(optRecipe.isPresent()){
+            Recipe recipe = optRecipe.get();
+            recipeRepository.deleteById(recipe.getId());
+
+            Optional<Recipe> deletedRecipe = recipeRepository.findById(101);
+            assertThat(deletedRecipe).isNull();
+        }
+
+    }
 }

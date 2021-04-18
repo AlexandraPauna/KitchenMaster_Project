@@ -1,9 +1,11 @@
 package com.example.project.controller;
 
 import com.example.project.model.Category;
+import com.example.project.model.Rating;
 import com.example.project.model.Recipe;
 import com.example.project.model.User;
 import com.example.project.service.CategoryService;
+import com.example.project.service.RatingService;
 import com.example.project.service.RecipeService;
 import com.example.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +30,18 @@ public class RecipeController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    RatingService ratingService;
+
 
     private Map<String, Category> categoryCache;
+
+    @RequestMapping(value = "/recipe/index", method = RequestMethod.GET)
+    public String allRecipes(Model model) {
+        model.addAttribute("recipes", recipeService.getAllRecipes());
+
+        return "/recipe/index";
+    }
 
     @RequestMapping(value = "/recipe/add", method = RequestMethod.GET)
     public String newRecipe(Model model) {
@@ -121,5 +133,94 @@ public class RecipeController {
         model.addAttribute("recipe", recipeService.findRecipeById(Integer.valueOf(id)));
 
         return "recipe/show";
+    }
+
+    @RequestMapping(value = "/recipe/personal", method = RequestMethod.GET)
+    public String allRecipesForLoggedUser(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByUserName(auth.getName());
+        if(user != null){
+            model.addAttribute("loggedUser", user);
+            model.addAttribute("isAuth", "true");
+            String role = user.getRoles().stream().findFirst().get().getRole().toUpperCase();
+            model.addAttribute("role", role);
+
+            List<Recipe> recipes = recipeService.getAllRecipesForLoggedUser(user);
+            model.addAttribute("recipes", recipes);
+            model.addAttribute("nrOfRecipes", recipes.size());
+
+            List<Rating> ratings = ratingService.getAllRatingsForLoggedUser(user);
+            model.addAttribute("nrOfRatings", ratings.size());
+
+            return "/recipe/personal";
+        }
+        else{
+            model.addAttribute("isAuth", "false");
+            return "redirect:/home/index";
+        }
+    }
+
+    @RequestMapping(value = "/recipe/update/{id}", method = RequestMethod.GET)
+    public String updateRecipe(Model model,@PathVariable int id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByUserName(auth.getName());
+        if(user != null){
+            model.addAttribute("loggedUser", user);
+            model.addAttribute("isAuth", "true");
+            String role = user.getRoles().stream().findFirst().get().getRole().toUpperCase();
+            model.addAttribute("role", role);
+        }
+        else{
+            model.addAttribute("isAuth", "false");
+        }
+        List<Category> categories = categoryService.getAllCategories();
+        categoryCache = new HashMap<String, Category>();
+        for (Category category : categories) {
+            categoryCache.put(category.getCategoryId().toString(), category);
+        }
+        model.addAttribute("categoriesList", categoryService.getAllCategories());
+
+        Recipe recipe = recipeService.findRecipeById(id);
+        model.addAttribute("recipe", recipe);
+        return "/recipe/update";
+    }
+
+    @PostMapping(value = "/recipe/update/{id}")
+    public String updateRecipe(@PathVariable("id") int id,@Valid Recipe recipe,
+                               BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            if(recipe.getCategories() != null){
+                model.addAttribute("categories", recipe.getCategories());
+            }
+            model.addAttribute("categoriesList", categoryService.getAllCategories());
+
+            return "/recipe/update";
+        }
+        Recipe currentRecipe = recipeService.findRecipeById(id);
+        currentRecipe.setName(recipe.getName());
+        currentRecipe.setScore(recipe.getScore());
+        //Calendar cal = Calendar.getInstance();
+        //Date dateUpdated = cal.getTime();
+        //currentRecipe.setDate(dateUpdated);
+        //Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        //User user = userService.findUserByUserName(auth.getName());
+        //String role = user.getRoles().stream().findFirst().get().getRole().toUpperCase();
+        //currentRecipe.setUser(user);
+        currentRecipe.setDescription(recipe.getDescription());
+        currentRecipe.setPreparation_time(recipe.getPreparation_time());
+        currentRecipe.setCalories(recipe.getCalories());
+        currentRecipe.setInfo(recipe.getInfo());
+        currentRecipe.setServing(recipe.getServing());
+        currentRecipe.setCategories(recipe.getCategories());
+
+        recipeService.updateRecipe(currentRecipe);
+        if (result.hasErrors()){
+            return "/recipe/update";
+        }
+
+        allRecipes(model);
+        //model.addAttribute("role",role);
+        return "redirect:/recipe/personal";
+
     }
 }

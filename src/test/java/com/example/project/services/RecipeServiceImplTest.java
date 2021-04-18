@@ -40,7 +40,7 @@ public class RecipeServiceImplTest {
     }
 
     @Test
-    public void testSavedCategory() {
+    public void testSavedRecipe() {
         //Setup
         final String name = "Recipe Test";
 
