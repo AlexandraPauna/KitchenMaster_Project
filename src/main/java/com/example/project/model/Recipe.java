@@ -71,5 +71,6 @@ public class Recipe {
     @Value("${score:0}")
     private Double score;
 
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
+    private Set<Rating> ratings = new HashSet<Rating>();
 }
