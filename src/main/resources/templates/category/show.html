@@ -212,7 +212,7 @@
 
                         <div class="tab-content">
                             <div class="tab-pane  active " id="alladslist">
-                                <div class="adds-wrapper row no-margin">
+                                <div th:if="${recipes != null}" class="adds-wrapper row no-margin">
                                     <div th:each="recipe : ${recipes.content}" class="item-list">
                                         <div class="row">
                                             <div class="col-md-2 no-padding photobox">
@@ -275,7 +275,7 @@
 
                     <div class="pagination-bar text-center">
                         <nav aria-label="Page navigation " class="d-inline-b">
-                            <ul class="pagination">
+                            <ul th:if="${recipes != null}" class="pagination">
                                 <li th:each="iterStat : ${#numbers.sequence(1, recipes.totalPages, 1)}">
                                     <a th:href="@{/category/show/__${category.categoryId}__/(pageNumber = ${(iterStat.intValue())}, sortKey = ${sortKey})}"
                                        th:text="${iterStat.intValue()}" class="page-link"></a></li>
