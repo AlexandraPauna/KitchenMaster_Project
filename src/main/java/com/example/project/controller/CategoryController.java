@@ -1,8 +1,10 @@
 package com.example.project.controller;
 
 import com.example.project.model.Category;
+import com.example.project.model.Recipe;
 import com.example.project.model.User;
 import com.example.project.service.CategoryService;
+import com.example.project.service.RecipeService;
 import com.example.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,9 @@ import java.util.stream.Collectors;
 public class CategoryController {
     @Autowired
     CategoryService categoryService;
+
+    @Autowired
+    RecipeService recipeService;
 
     @Autowired
     UserService userService;
@@ -74,17 +79,17 @@ public class CategoryController {
         }
 
         model.addAttribute("category", categoryService.findCategoryById(Integer.valueOf(id)));
-//        List<Recipe> recipes = new ArrayList<>(categoryService.findCategoryById(Integer.valueOf(id)).getRecipes());
-//        model.addAttribute("nrOfRecipes",recipes.size());
+        List<Recipe> recipes = new ArrayList<>(categoryService.findCategoryById(Integer.valueOf(id)).getRecipes());
+        model.addAttribute("nrOfRecipes",recipes.size());
 
-//        Page<Recipe> pages = recipeService.getAllRecipesByCategoryPage(Integer.valueOf(id), pageNumber, sortKey);
-//        model.addAttribute("recipes", pages);
+        Page<Recipe> pages = recipeService.getAllRecipesByCategoryPage(Integer.valueOf(id), pageNumber, sortKey);
+        model.addAttribute("recipes", pages);
         model.addAttribute("currentPage", pageNumber);
-//        model.addAttribute("sortKey", sortKey);
+        model.addAttribute("sortKey", sortKey);
 
         //TO DO: sa se elimine categoria curenta din lista
-//        List<Category> allCategories = categoryService.getAllCategories();
-//        model.addAttribute("allCategories", allCategories);
+        List<Category> allCategories = categoryService.getAllCategories();
+        model.addAttribute("allCategories", allCategories);
 
         return "category/show";
     }
