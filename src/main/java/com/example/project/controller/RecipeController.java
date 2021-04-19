@@ -135,6 +135,12 @@ public class RecipeController {
         return "recipe/show";
     }
 
+    @RequestMapping("recipe/{id}/delete")
+    public String deleteById(@PathVariable String id){
+        recipeService.deleteById(Integer.valueOf(id));
+        return "redirect:/recipe/personal";
+    }
+
     @RequestMapping(value = "/recipe/personal", method = RequestMethod.GET)
     public String allRecipesForLoggedUser(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
