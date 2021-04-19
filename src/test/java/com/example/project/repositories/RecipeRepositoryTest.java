@@ -24,7 +24,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class RecipeRepositoryTestIntegration {
+public class RecipeRepositoryTest {
 
     @Autowired
     RecipeRepository recipeRepository;

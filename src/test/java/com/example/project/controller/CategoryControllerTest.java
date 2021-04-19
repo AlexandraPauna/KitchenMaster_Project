@@ -44,7 +44,7 @@ import static org.hamcrest.Matchers.hasSize;
 @AutoConfigureMockMvc
 @ActiveProfiles({"mysql"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class CategoryControllerTestIntegration {
+public class CategoryControllerTest {
     @Autowired
     private MockMvc mockMvc;
 

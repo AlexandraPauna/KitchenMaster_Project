@@ -31,7 +31,7 @@ import static org.junit.Assert.assertEquals;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestMethodOrder(OrderAnnotation.class)
-public class CategoryRepositoryTestIntegration {
+public class CategoryRepositoryTest {
 
     @Autowired
     CategoryRepository categoryRepository;
