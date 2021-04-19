@@ -9,23 +9,19 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.junit.platform.commons.logging.LoggerFactory;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -34,41 +30,39 @@ import static org.junit.Assert.assertEquals;
 public class CategoryRepositoryTest {
 
     @Autowired
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
-//    @Before
-//    public void setUp() throws Exception {
-//        Category category = new Category();
-//        category.setName("CategorieTest");
-//        savedCategory = categoryRepository.saveAndFlush(category);
-//    }
+    public Integer generatedId;
 
     @Test
-    @Transactional
-    @Rollback(value = false)
+    //@Transactional
+    @Rollback(false)
     @Order(1)
     public void t1_saveCategory() throws Exception {
 
         Category category = new Category();
         category.setName("CategorieTest");
-        category.setCategoryId(101);
+        //category.setCategoryId(101);
         Category savedCategory = categoryRepository.saveAndFlush(category);
+        generatedId = savedCategory.getCategoryId();
 
         assertThat(savedCategory.getCategoryId()).isGreaterThan(0);
     }
 
     @Test
+    @Rollback(value = false)
     @Order(2)
     public void t2_findByName() {
-        Optional<Category> optCategory = categoryRepository.findByName("CategorieTest");
-        assertThat(Optional.ofNullable(optCategory.get().getName())).isEqualTo(Optional.ofNullable("CategorieTest"));
+        Optional<Category> optCategory = categoryRepository.findByName("CategorieTst");
+        assertThat(Optional.ofNullable(optCategory.get().getName())).isEqualTo(Optional.ofNullable("CategorieTst"));
     }
 
     @Test
+    @Rollback(value = false)
     @Order(3)
     public void t3_findById() {
-        Optional<Category> optCategory = categoryRepository.findById(101);
-        assertThat(Optional.ofNullable(optCategory.get().getCategoryId())).isEqualTo(Optional.ofNullable(101));
+        Optional<Category> optCategory = categoryRepository.findById(48);
+        assertThat(Optional.ofNullable(optCategory.get().getCategoryId())).isEqualTo(Optional.ofNullable(48));
     }
 
     @Test
@@ -98,12 +92,12 @@ public class CategoryRepositoryTest {
     @Rollback(false)
     @Order(6)
     public void t6_deleteCategory() {
-        Optional<Category> optCategory = categoryRepository.findByName("CategorieTest");
+        Optional<Category> optCategory = categoryRepository.findByName("CategorieSchimbata");
         if(optCategory.isPresent()){
             Category cat = optCategory.get();
             categoryRepository.deleteById(cat.getCategoryId());
 
-            Optional<Category> deletedCategory = categoryRepository.findByName("CategorieTest");
+            Optional<Category> deletedCategory = categoryRepository.findByName("CategorieSchimbata");
             assertThat(deletedCategory).isNull();
         }
 

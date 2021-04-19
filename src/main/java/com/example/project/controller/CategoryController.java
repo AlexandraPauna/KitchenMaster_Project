@@ -126,6 +126,7 @@ public class CategoryController {
         currentCategory.setName(category.getName());
         categoryService.updateCategory(currentCategory);
 
+        allCategories(model);
         return "/category/index";
     }
 

@@ -85,45 +85,45 @@
 
                         <!-- Tab panes -->
                         <div class="tab-content">
-<!--                            <div role="tabpanel" class="tab-pane active" id="tab1">-->
-<!--                                <div class="col-xl-12 tab-inner">-->
-<!--                                    <div class="row">-->
-<!--                                        <ul th:if="${categoriesList1 != null}" th:each="category : ${categoriesList1}"-->
-<!--                                            class="cat-list col-md-3  col-6 col-xxs-12">-->
-<!--                                            <li>-->
-<!--                                                <a th:href="@{'/category/show/' + ${category.categoryId}}"-->
-<!--                                                   th:text="${category.name}"></a>-->
-<!--                                            </li>-->
-<!--                                        </ul>-->
+                            <div role="tabpanel" class="tab-pane active" id="tab1">
+                                <div class="col-xl-12 tab-inner">
+                                    <div class="row">
+                                        <ul th:if="${categoriesList1 != null}" th:each="category : ${categoriesList1}"
+                                            class="cat-list col-md-3  col-6 col-xxs-12">
+                                            <li>
+                                                <a th:href="@{'/category/show/' + ${category.categoryId}}"
+                                                   th:text="${category.name}"></a>
+                                            </li>
+                                        </ul>
 
-<!--                                        <ul th:if="${categoriesList2 != null}" th:each="category : ${categoriesList2}"-->
-<!--                                            class="cat-list col-md-3  col-6 col-xxs-12">-->
-<!--                                            <li>-->
-<!--                                                <a th:href="@{'/category/show/' + ${category.categoryId}}"-->
-<!--                                                   th:text="${category.name}"></a>-->
-<!--                                            </li>-->
-<!--                                        </ul>-->
+                                        <ul th:if="${categoriesList2 != null}" th:each="category : ${categoriesList2}"
+                                            class="cat-list col-md-3  col-6 col-xxs-12">
+                                            <li>
+                                                <a th:href="@{'/category/show/' + ${category.categoryId}}"
+                                                   th:text="${category.name}"></a>
+                                            </li>
+                                        </ul>
 
-<!--                                        <ul th:if="${categoriesList3 != null}" th:each="category : ${categoriesList3}"-->
-<!--                                            class="cat-list col-md-3  col-6 col-xxs-12">-->
-<!--                                            <li>-->
-<!--                                                <a th:href="@{'/category/show/' + ${category.categoryId}}"-->
-<!--                                                   th:text="${category.name}"></a>-->
-<!--                                            </li>-->
-<!--                                        </ul>-->
+                                        <ul th:if="${categoriesList3 != null}" th:each="category : ${categoriesList3}"
+                                            class="cat-list col-md-3  col-6 col-xxs-12">
+                                            <li>
+                                                <a th:href="@{'/category/show/' + ${category.categoryId}}"
+                                                   th:text="${category.name}"></a>
+                                            </li>
+                                        </ul>
 
-<!--                                        <ul th:if="${categoriesList4 != null}" th:each="category : ${categoriesList4}"-->
-<!--                                            class="cat-list col-md-3  col-6 col-xxs-12">-->
-<!--                                            <li>-->
-<!--                                                <a th:href="@{'/category/show/' + ${category.categoryId}}"-->
-<!--                                                   th:text="${category.name}"></a>-->
-<!--                                            </li>-->
+                                        <ul th:if="${categoriesList4 != null}" th:each="category : ${categoriesList4}"
+                                            class="cat-list col-md-3  col-6 col-xxs-12">
+                                            <li>
+                                                <a th:href="@{'/category/show/' + ${category.categoryId}}"
+                                                   th:text="${category.name}"></a>
+                                            </li>
 
-<!--                                        </ul>-->
+                                        </ul>
 
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
@@ -157,19 +157,19 @@
                             </a>
                         </nav>
 
-<!--                        Latest recipes-->
-<!--                        <div class="no-margin featured-list-slider ">-->
-<!--                            <div th:each="recipe : ${latestRecipes}" class="item">-->
-<!--                                <a th:href="@{'/recipe/show/' + ${recipe.id}}">-->
-<!--                                <span class="item-carousel-thumb">-->
-<!--                                    <img class="img-responsive" th:src="@{/images/chefHat.jpg}" alt="img">-->
-<!--                                </span>-->
-<!--                                    <span class="item-name" th:text="${recipe.name}"></span>-->
-<!--                                    <span class="price" th:text="${recipe.calories} + ' KCAL'"></span>-->
-<!--                                </a>-->
-<!--                            </div>-->
+                        Latest recipes
+                        <div class="no-margin featured-list-slider ">
+                            <div th:each="recipe : ${latestRecipes}" class="item">
+                                <a th:href="@{'/recipe/show/' + ${recipe.id}}">
+                                <span class="item-carousel-thumb">
+                                    <img class="img-responsive" th:src="@{/images/chefHat.jpg}" alt="img">
+                                </span>
+                                    <span class="item-name" th:text="${recipe.name}"></span>
+                                    <span class="price" th:text="${recipe.calories} + ' KCAL'"></span>
+                                </a>
+                            </div>
 
-<!--                        </div>-->
+                        </div>
                     </div>
 
                 </div>
